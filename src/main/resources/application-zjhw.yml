@@ -1,0 +1,54 @@
+spring:
+  # 镇江公路局环境：通过环境变量注入连接信息，勿提交真实密码
+  datasource:
+    druid:
+      url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:3306/hz_expressway_warning?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: ${MYSQL_USERNAME:root}
+      password: ${MYSQL_PASSWORD:change-me}
+      #数据源其他配置
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,slf4j,config
+      maxPoolPreparedStatementPerConnectionSize: 20
+      useGlobalDataSourceStat: true
+      connection-properties: config.decrypt=${DRUID_CONFIG_DECRYPT:false}
+  #配置redis
+  redis:
+    database: 0
+    port: 6379
+    host: ${REDIS_HOST:127.0.0.1}
+    password: ${REDIS_PASSWORD:}
+  #配置rabbitmq
+  rabbitmq:
+    host: ${RABBITMQ_HOST:127.0.0.1}
+    port: 5672
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: /
+    #  支持发布确认
+    publisher-confirm-type: correlated
+    #  支持发布返回
+    publisher-returns: true
+    template:
+      mandatory: true
+    listener:
+      simple:
+        #  采用手动应答
+        acknowledge-mode: manual
+        #  当前监听容器数
+        concurrency: 5
+        #  最大数
+        max-concurrency: 10
+        #  是否支持重试
+        retry:
+          enabled: true

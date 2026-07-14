@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.huizhu.core.dao.WorkOrderDao">
+
+    <!-- 统计工单 -->
+    <select id="statisticsOrder" parameterType="map" resultType="long">
+        select count(1) from work_order
+        <where>
+            <if test="status != null">
+                and `status` = #{status}
+            </if>
+            <if test="timeOut != null">
+                and time_out = #{timeOut}
+            </if>
+            <if test="type != null">
+                and `type` = #{type}
+            </if>
+            and gmt_create between #{startDateTime} and #{endDateTime}
+        </where>
+    </select>
+
+
+
+</mapper>
